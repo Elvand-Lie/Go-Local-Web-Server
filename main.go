@@ -8,36 +8,36 @@ import (
 
 func formHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
-		fmt.Fprintf(w, "Parseform() err: %v", err)
+		fmt.Fprintf(w, "Parseform() error: %v", err)
 		return
 	}
-	fmt.Fprintf(w, "Post request sucecssful\n")
+	fmt.Fprintf(w, "Post successful\n")
 	name := r.FormValue("name")
 	address := r.FormValue("address")
-	fmt.Fprintf(w, "Name = %s\n", name)
-	fmt.Fprintf(w, "Address = %s\n", address)
+	fmt.Fprintf(w, "Name : %s", name)
+	fmt.Fprintf(w, "address : %s", address)
 }
 
 func helloHandler(w http.ResponseWriter, r *http.Request) {
 	if r.URL.Path != "/hello" {
-		http.Error(w, "404 not found", http.StatusNotFound)
+		http.Error(w, "This page didn't exist.", http.StatusNotFound)
 		return
 	}
 	if r.Method != "GET" {
-		http.Error(w, "method is not supported", http.StatusNotFound)
+		http.Error(w, "This method is not supported", http.StatusNotFound)
 		return
 	}
-	fmt.Fprintf(w, "Hello!")
+	fmt.Fprintf(w, "Hello there.")
 }
 
 func main() {
+	fmt.Printf("We're serving on port 8000.")
 	fileServer := http.FileServer(http.Dir("./static"))
 	http.Handle("/", fileServer)
-	http.HandleFunc("/form", formHandler)
 	http.HandleFunc("/hello", helloHandler)
+	http.HandleFunc("/form", formHandler)
 
-	fmt.Printf("Starting server at port 8000\n")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	if err := http.ListenAndServe(":8000", nil); err != nil {
 		log.Fatal(err)
 	}
 }
